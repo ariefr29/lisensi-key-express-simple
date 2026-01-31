@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <%- include('../partials/head', { pageTitle: 'Dokumentasi API' }) %>
+
+        <style>
+            .code-block {
+                background: #111;
+                color: #e2e8f0;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                overflow-x: auto;
+                font-family: 'Courier New', monospace;
+                font-size: 0.875rem;
+                line-height: 1.5;
+                border: 1px solid #333;
+            }
+
+            .code-inline {
+                background: #222;
+                color: #a78bfa;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+                font-family: 'Courier New', monospace;
+                font-size: 0.875rem;
+                border: 1px solid #333;
+            }
+
+            .section-title {
+                color: #fff;
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid #333;
+            }
+
+            .api-method {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                border-radius: 0.25rem;
+                font-weight: 600;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+            }
+
+            .method-post {
+                background: #059669;
+                color: white;
+            }
+
+            .method-get {
+                background: #2563eb;
+                color: white;
+            }
+        </style>
+</head>
+
+<body>
+    <div class="flex bg-black min-h-screen">
+        <%- include('../partials/components/sidebar', { admin, activePage: '/admin/documentation' }) %>
+
+            <main class="flex-1 ml-64 p-8 overflow-y-auto h-screen">
+                <div class="max-w-5xl mx-auto">
+                    <div class="card p-8 border border-gray-800 bg-gray-900/50">
+                        <!-- Header -->
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-bold text-white mb-2">📚 Dokumentasi API License Server</h1>
+                            <p class="text-gray-400">Panduan lengkap cara menggunakan License Server API untuk aplikasi
+                                Anda</p>
+                        </div>
+
+                        <!-- Base URL -->
+                        <div class="mb-8 p-4 bg-blue-900/20 border-l-4 border-blue-500 rounded">
+                            <p class="font-semibold text-blue-400 mb-2">Base URL:</p>
+                            <code class="code-inline"><%= baseUrl %>/api</code>
+                        </div>
+
+                        <!-- Table of Contents -->
+                        <div class="mb-8 card p-6 bg-gray-800/50 border border-gray-700">
+                            <h3 class="font-bold text-lg mb-4 text-white">📋 Daftar Isi</h3>
+                            <ul class="space-y-2">
+                                <li><a href="#aktivasi" class="text-purple-400 hover:text-purple-300">1. Aktivasi
+                                        License</a></li>
+                                <li><a href="#validasi" class="text-purple-400 hover:text-purple-300">2. Validasi
+                                        License</a></li>
+                                <li><a href="#webhook" class="text-purple-400 hover:text-purple-300">3. Webhook (Auto
+                                        Generate)</a></li>
+                                <li><a href="#implementasi" class="text-purple-400 hover:text-purple-300">4. Contoh
+                                        Implementasi</a></li>
+                                <li><a href="#error" class="text-purple-400 hover:text-purple-300">5. Error Handling</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- 1. Aktivasi License -->
+                        <div id="aktivasi" class="mb-12">
+                            <h2 class="section-title">1. Aktivasi License</h2>
+                            <p class="text-gray-300 mb-4">Endpoint ini digunakan untuk mengaktifkan license pada domain
+                                tertentu.</p>
+
+                            <div class="mb-4">
+                                <span class="api-method method-post">POST</span>
+                                <code class="code-inline ml-2">/api/activate</code>
+                            </div>
+
+                            <h4 class="font-semibold text-white mb-2">Request Body:</h4>
+                            <div class="code-block mb-4">{
+                                "license_key": "ABCD1234-5678-90EF-GHIJ-KLMNOPQRSTUV",
+                                "domain": "example.com"
+                                }</div>
+
+                            <h4 class="font-semibold text-white mb-2">Response Sukses (200):</h4>
+                            <div class="code-block mb-4">{
+                                "status": "ok",
+                                "message": "activated",
+                                "data": {
+                                "domains_used": 1,
+                                "max_domains": 3
+                                }
+                                }</div>
+
+                            <div class="p-4 bg-yellow-900/20 border-l-4 border-yellow-500 rounded mt-4">
+                                <p class="text-sm text-yellow-200"><strong>Catatan:</strong> Endpoint ini akan mencatat
+                                    domain yang mengaktifkan license. Jika domain sudah terdaftar, akan mengembalikan
+                                    status sukses.</p>
+                            </div>
+                        </div>
+
+                        <!-- 2. Validasi License -->
+                        <div id="validasi" class="mb-12">
+                            <h2 class="section-title">2. Validasi License</h2>
+                            <p class="text-gray-300 mb-4">Endpoint ini digunakan untuk memeriksa status license secara
+                                berkala (harian/mingguan).</p>
+
+                            <div class="mb-4">
+                                <span class="api-method method-post">POST</span>
+                                <code class="code-inline ml-2">/api/check</code>
+                            </div>
+
+                            <h4 class="font-semibold text-white mb-2">Request Body:</h4>
+                            <div class="code-block mb-4">{
+                                "license_key": "ABCD1234-5678-90EF-GHIJ-KLMNOPQRSTUV",
+                                "domain": "example.com"
+                                }</div>
+
+                            <h4 class="font-semibold text-white mb-2">Response Aktif:</h4>
+                            <div class="code-block mb-4">{
+                                "status": "active",
+                                "expire_at": "2025-12-31",
+                                "remaining_days": 365
+                                }</div>
+
+                            <div class="p-4 bg-blue-900/20 border-l-4 border-blue-500 rounded mt-4">
+                                <p class="text-sm text-blue-200"><strong>Recommended:</strong> Jalankan validasi ini
+                                    setiap hari menggunakan cron job untuk memastikan license masih valid.</p>
+                            </div>
+                        </div>
+
+                        <!-- 3. Webhook -->
+                        <div id="webhook" class="mb-12">
+                            <h2 class="section-title">3. Webhook (Auto Generate License)</h2>
+                            <p class="text-gray-300 mb-4">Endpoint untuk generate license otomatis dari platform
+                                e-commerce (WooCommerce, EDD, dll).</p>
+
+                            <div class="mb-4">
+                                <span class="api-method method-post">POST</span>
+                                <code class="code-inline ml-2">/webhook/create-license</code>
+                            </div>
+
+                            <h4 class="font-semibold text-white mb-2">Headers Required:</h4>
+                            <div class="code-block mb-4">x-webhook-secret: your-webhook-secret-here</div>
+
+                            <h4 class="font-semibold text-white mb-2">Request Body:</h4>
+                            <div class="code-block mb-4">{
+                                "buyer_email": "customer@example.com",
+                                "buyer_name": "John Doe",
+                                "product_id": "premium-plugin",
+                                "max_domains": 3
+                                }</div>
+
+                            <div class="p-4 bg-red-900/20 border-l-4 border-red-500 rounded mt-4">
+                                <p class="text-sm text-red-200"><strong>Security:</strong> Pastikan webhook secret
+                                    disimpan dengan aman dan tidak dishare ke publik!</p>
+                            </div>
+                        </div>
+
+                        <!-- 4. Contoh Implementasi -->
+                        <div id="implementasi" class="mb-12">
+                            <h2 class="section-title">4. Contoh Implementasi</h2>
+
+                            <!-- PHP/WordPress -->
+                            <div class="mb-6">
+                                <h3 class="font-bold text-lg mb-3 text-white">🔹 PHP / WordPress</h3>
+                                <div class="code-block">&lt;?php
+                                    // Aktivasi License
+                                    function activate_license($license_key) {
+                                    $response = wp_remote_post('<%= baseUrl %>/api/activate', [
+                                        'body' => json_encode([
+                                        'license_key' => $license_key,
+                                        'domain' => $_SERVER['HTTP_HOST']
+                                        ]),
+                                        'headers' => ['Content-Type' => 'application/json']
+                                        ]);
+
+                                        $body = json_decode(wp_remote_retrieve_body($response), true);
+                                        return $body['status'] === 'ok';
+                                        }
+
+                                        // Validasi License (Cron Job Harian)
+                                        add_action('daily_license_check', 'check_license_status');
+
+                                        function check_license_status() {
+                                        $license_key = get_option('license_key');
+                                        $response = wp_remote_post('<%= baseUrl %>/api/check', [
+                                            'body' => json_encode([
+                                            'license_key' => $license_key,
+                                            'domain' => $_SERVER['HTTP_HOST']
+                                            ]),
+                                            'headers' => ['Content-Type' => 'application/json']
+                                            ]);
+
+                                            $body = json_decode(wp_remote_retrieve_body($response), true);
+                                            update_option('license_status', $body['status']);
+                                            }
+                                            ?&gt;</div>
+                            </div>
+
+                            <!-- JavaScript -->
+                            <div class="mb-6">
+                                <h3 class="font-bold text-lg mb-3 text-white">🔹 JavaScript / Node.js</h3>
+                                <div class="code-block">// Aktivasi License
+                                    async function activateLicense(licenseKey) {
+                                    const response = await fetch('<%= baseUrl %>/api/activate', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                        license_key: licenseKey,
+                                        domain: window.location.hostname
+                                        })
+                                        });
+
+                                        const data = await response.json();
+                                        return data.status === 'ok';
+                                        }
+
+                                        // Check License Status
+                                        async function checkLicense() {
+                                        const licenseKey = localStorage.getItem('license_key');
+                                        const response = await fetch('<%= baseUrl %>/api/check', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                            license_key: licenseKey,
+                                            domain: window.location.hostname
+                                            })
+                                            });
+
+                                            const data = await response.json();
+                                            return data.status === 'active';
+                                            }</div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Error Handling -->
+                        <div id="error" class="mb-12">
+                            <h2 class="section-title">5. Error Handling</h2>
+
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full border border-gray-800">
+                                    <thead class="bg-gray-800">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase border-b border-gray-700">
+                                                Status Code</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase border-b border-gray-700">
+                                                Pesan</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase border-b border-gray-700">
+                                                Solusi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-800">
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm font-mono text-purple-400">404</td>
+                                            <td class="px-6 py-4 text-sm text-gray-300">License key not found</td>
+                                            <td class="px-6 py-4 text-sm text-gray-400">Pastikan license key valid dan
+                                                sudah dibuat</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm font-mono text-purple-400">403</td>
+                                            <td class="px-6 py-4 text-sm text-gray-300">License is suspended</td>
+                                            <td class="px-6 py-4 text-sm text-gray-400">Hubungi admin untuk reaktivasi
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm font-mono text-purple-400">403</td>
+                                            <td class="px-6 py-4 text-sm text-gray-300">License has expired</td>
+                                            <td class="px-6 py-4 text-sm text-gray-400">Perpanjang license atau beli
+                                                yang baru</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm font-mono text-purple-400">403</td>
+                                            <td class="px-6 py-4 text-sm text-gray-300">Domain limit reached</td>
+                                            <td class="px-6 py-4 text-sm text-gray-400">Upgrade license atau hapus
+                                                domain lain</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm font-mono text-purple-400">429</td>
+                                            <td class="px-6 py-4 text-sm text-gray-300">Too many requests</td>
+                                            <td class="px-6 py-4 text-sm text-gray-400">Tunggu beberapa saat sebelum
+                                                request lagi</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Tips & Best Practices -->
+                        <div
+                            class="card p-6 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 border border-purple-500/30">
+                            <h3 class="font-bold text-lg mb-4 text-purple-300">💡 Tips & Best Practices</h3>
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-green-400 mr-2 mt-0.5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Simpan license key dengan aman (enkripsi di database)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-green-400 mr-2 mt-0.5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Jalankan validasi license secara periodik (setiap 24 jam)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-green-400 mr-2 mt-0.5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Gunakan HTTPS untuk semua request API</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-green-400 mr-2 mt-0.5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Berikan feedback visual ke user saat aktivasi/validasi</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Contact Support -->
+                        <div class="mt-8 text-center p-6 bg-gray-800/50 rounded-lg border border-gray-700">
+                            <p class="text-gray-300">Butuh bantuan? Hubungi tim support kami!</p>
+                            <p class="text-sm text-gray-500 mt-2">Email: support@example.com</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+    </div>
+</body>
+
+</html>

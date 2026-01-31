@@ -1,0 +1,13 @@
+{
+    "name": "contoh-implement",
+    "version": "1.0.0",
+    "description": "Sample project demonstrating license key usage",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "axios": "^1.7.2"
+    }
+}

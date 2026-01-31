@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <%- include('partials/head') %>
+</head>
+
+<body>
+  <div class="flex bg-black min-h-screen">
+    <!-- Sidebar Navigation -->
+    <%- include('partials/components/sidebar', { admin, activePage }) %>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 ml-64 overflow-y-auto">
+        <%- body %>
+      </main>
+  </div>
+</body>
+
+</html>

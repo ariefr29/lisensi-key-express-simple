@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <%- include('../partials/head', { pageTitle: 'Buat License' }) %>
+</head>
+
+<body>
+    <div class="flex bg-black min-h-screen">
+        <%- include('../partials/components/sidebar', { admin, activePage: '/admin/licenses/create' }) %>
+
+            <main class="flex-1 ml-64 p-8 overflow-y-auto h-screen">
+                <div class="max-w-2xl mx-auto">
+                    <!-- Header -->
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-white tracking-tight mb-2">Buat License Baru</h2>
+                        <p class="text-gray-500 text-sm">Generate license key baru untuk produk Anda</p>
+                    </div>
+
+                    <!-- Form Card -->
+                    <div class="card p-8 border border-gray-800 bg-gray-900/50">
+                        <!-- Error Message -->
+                        <% if (error) { %>
+                            <div
+                                class="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg flex items-center">
+                                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                        clip-rule="evenodd">
+                                    </path>
+                                </svg>
+                                <span class="text-sm font-medium">
+                                    <%= error %>
+                                </span>
+                            </div>
+                            <% } %>
+
+                                <!-- Form -->
+                                <form action="/admin/licenses/create" method="POST" class="space-y-6"
+                                    x-data="{ licenseKey: '<%= generatedKey %>' }">
+
+                                    <!-- License Key Field -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                                            License Key
+                                        </label>
+                                        <div class="flex gap-2">
+                                            <input type="text" name="license_key"
+                                                class="input-field flex-1 font-mono text-sm" x-model="licenseKey"
+                                                required readonly>
+                                            <button type="button" class="btn-secondary" @click="navigator.clipboard.writeText(licenseKey); 
+                                            $el.textContent = 'Tersalin!'; 
+                                            setTimeout(() => $el.textContent = 'Salin', 2000)">
+                                                Salin
+                                            </button>
+                                        </div>
+                                        <p class="mt-2 text-xs text-gray-500">Key unik yang di-generate otomatis</p>
+                                    </div>
+
+                                    <!-- Max Domains Field -->
+                                    <div>
+                                        <label for="max_domains" class="block text-sm font-medium text-gray-300 mb-2">
+                                            Maksimal Domain
+                                        </label>
+                                        <input type="number" id="max_domains" name="max_domains" class="input-field"
+                                            min="1" value="1" required>
+                                        <p class="mt-2 text-xs text-gray-500">Jumlah domain yang dapat menggunakan
+                                            license ini</p>
+                                    </div>
+
+                                    <!-- Expiry Date Field -->
+                                    <div>
+                                        <label for="expire_at" class="block text-sm font-medium text-gray-300 mb-2">
+                                            Tanggal Kadaluarsa
+                                        </label>
+                                        <input type="date" id="expire_at" name="expire_at" class="input-field" required>
+                                        <p class="mt-2 text-xs text-gray-500">License akan kadaluarsa pada tanggal ini
+                                        </p>
+                                    </div>
+
+                                    <!-- Notes Field -->
+                                    <div>
+                                        <label for="notes" class="block text-sm font-medium text-gray-300 mb-2">
+                                            Catatan (Opsional)
+                                        </label>
+                                        <textarea id="notes" name="notes" class="input-field" rows="4"
+                                            placeholder="Contoh: Nama customer, ID order, dll.">
+                            </textarea>
+                                        <p class="mt-2 text-xs text-gray-500">Catatan internal untuk license ini</p>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="flex gap-3 pt-4 border-t border-gray-800 mt-8">
+                                        <button type="submit" class="btn-primary">
+                                            Buat License
+                                        </button>
+                                        <a href="/admin/licenses" class="btn-secondary">
+                                            Batal
+                                        </a>
+                                    </div>
+                                </form>
+                    </div>
+                </div>
+            </main>
+    </div>
+
+    <!-- Script untuk set default expiry date (1 tahun dari sekarang) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const expireInput = document.getElementById('expire_at');
+            const oneYearFromNow = new Date();
+            oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+            expireInput.value = oneYearFromNow.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+
+</html>
